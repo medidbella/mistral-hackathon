@@ -1,0 +1,11 @@
+/* Additional styles for Mindful Access extension */
+/* These are loaded via manifest.json content_scripts */
+
+#mindful-access-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important;
+}
