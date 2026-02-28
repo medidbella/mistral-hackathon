@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "AI says NO",
+  "name": "Mindful access",
   "version": "1.0.0",
   "description": "AI productivity extension that requires you to justify accessing distracting websites",
   "permissions": [

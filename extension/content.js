@@ -2,6 +2,13 @@
 (function() {
   'use strict';
 
+  if (window !== window.top) {
+    return;
+  }
+
+  if (!window.location.href.startsWith('http')) {
+    return;
+  }
   // Hide all page content immediately
   const style = document.createElement('style');
   style.id = 'mindful-access-hide';
@@ -56,169 +63,198 @@
       </div>
     `;
 
-    // Apply overlay styles
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      z-index: 2147483647;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-    `;
-
-    document.body.appendChild(overlay);
+    // Add styles first, then append overlay
     addOverlayStyles();
+    document.body.appendChild(overlay);
     attachEventListeners();
   }
 
   function addOverlayStyles() {
+    // Don't add styles twice
+    if (document.getElementById('mindful-access-styles')) return;
+    
     const styleEl = document.createElement('style');
+    styleEl.id = 'mindful-access-styles';
     styleEl.textContent = `
-      #mindful-access-overlay * {
-        box-sizing: border-box;
+      #mindful-access-overlay {
+        all: initial !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+        z-index: 2147483647 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif !important;
       }
       
-      .mindful-container {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 40px;
-        max-width: 500px;
-        width: 90%;
-        text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      #mindful-access-overlay *,
+      #mindful-access-overlay *::before,
+      #mindful-access-overlay *::after {
+        box-sizing: border-box !important;
       }
       
-      .mindful-icon {
-        font-size: 64px;
-        margin-bottom: 20px;
+      #mindful-access-overlay .mindful-container {
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 20px !important;
+        padding: 40px !important;
+        max-width: 500px !important;
+        width: 90% !important;
+        text-align: center !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
       }
       
-      .mindful-title {
-        color: #fff;
-        font-size: 32px;
-        margin: 0 0 10px 0;
-        font-weight: 700;
+      #mindful-access-overlay .mindful-icon {
+        font-size: 64px !important;
+        margin: 0 0 20px 0 !important;
+        display: block !important;
+        line-height: 1.2 !important;
       }
       
-      .mindful-subtitle {
-        color: #e94560;
-        font-size: 18px;
-        margin: 0 0 10px 0;
+      #mindful-access-overlay .mindful-title {
+        color: #fff !important;
+        font-size: 32px !important;
+        margin: 0 0 10px 0 !important;
+        padding: 0 !important;
+        font-weight: 700 !important;
+        display: block !important;
       }
       
-      .mindful-description {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 14px;
-        line-height: 1.6;
-        margin: 0 0 25px 0;
+      #mindful-access-overlay .mindful-subtitle {
+        color: #e94560 !important;
+        font-size: 18px !important;
+        margin: 0 0 10px 0 !important;
+        padding: 0 !important;
+        display: block !important;
       }
       
-      .mindful-form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+      #mindful-access-overlay .mindful-description {
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 14px !important;
+        line-height: 1.6 !important;
+        margin: 0 0 25px 0 !important;
+        padding: 0 !important;
+        display: block !important;
       }
       
-      #mindful-excuse {
-        width: 100%;
-        padding: 15px;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-        font-size: 16px;
-        resize: none;
-        transition: border-color 0.3s;
+      #mindful-access-overlay .mindful-form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
       }
       
-      #mindful-excuse:focus {
-        outline: none;
-        border-color: #e94560;
+      #mindful-access-overlay #mindful-excuse {
+        width: 100% !important;
+        padding: 15px !important;
+        border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #fff !important;
+        font-size: 16px !important;
+        font-family: inherit !important;
+        resize: none !important;
+        transition: border-color 0.3s !important;
+        min-height: 100px !important;
+        margin: 0 !important;
       }
       
-      #mindful-excuse::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+      #mindful-access-overlay #mindful-excuse:focus {
+        outline: none !important;
+        border-color: #e94560 !important;
       }
       
-      #mindful-submit {
-        padding: 15px 30px;
-        background: linear-gradient(135deg, #e94560, #0f3460);
-        border: none;
-        border-radius: 12px;
-        color: #fff;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
+      #mindful-access-overlay #mindful-excuse::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
       }
       
-      #mindful-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+      #mindful-access-overlay #mindful-submit {
+        padding: 15px 30px !important;
+        margin: 0 !important;
+        background: linear-gradient(135deg, #e94560, #0f3460) !important;
+        border: none !important;
+        border-radius: 12px !important;
+        color: #fff !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        font-family: inherit !important;
+        cursor: pointer !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
       }
       
-      #mindful-submit:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
+      #mindful-access-overlay #mindful-submit:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3) !important;
       }
       
-      .mindful-response {
-        margin-top: 20px;
-        padding: 20px;
-        border-radius: 12px;
-        text-align: left;
+      #mindful-access-overlay #mindful-submit:disabled {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+        transform: none !important;
       }
       
-      .mindful-response.success {
-        background: rgba(46, 213, 115, 0.2);
-        border: 1px solid rgba(46, 213, 115, 0.5);
+      #mindful-access-overlay .mindful-response {
+        margin: 20px 0 0 0 !important;
+        padding: 20px !important;
+        border-radius: 12px !important;
+        text-align: left !important;
       }
       
-      .mindful-response.denied {
-        background: rgba(233, 69, 96, 0.2);
-        border: 1px solid rgba(233, 69, 96, 0.5);
+      #mindful-access-overlay .mindful-response.success {
+        background: rgba(46, 213, 115, 0.2) !important;
+        border: 1px solid rgba(46, 213, 115, 0.5) !important;
       }
       
-      .mindful-response p {
-        color: #fff;
-        margin: 0;
-        line-height: 1.6;
+      #mindful-access-overlay .mindful-response.denied {
+        background: rgba(233, 69, 96, 0.2) !important;
+        border: 1px solid rgba(233, 69, 96, 0.5) !important;
       }
       
-      .mindful-response .duration {
-        margin-top: 10px;
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.7);
+      #mindful-access-overlay .mindful-response p {
+        color: #fff !important;
+        margin: 0 !important;
+        line-height: 1.6 !important;
+        padding: 5px 0 !important;
       }
       
-      .hidden {
+      #mindful-access-overlay .mindful-response .duration {
+        margin-top: 10px !important;
+        font-size: 14px !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+      }
+      
+      #mindful-access-overlay .hidden {
         display: none !important;
       }
       
-      .mindful-loading {
-        margin-top: 20px;
-        color: rgba(255, 255, 255, 0.7);
+      #mindful-access-overlay .mindful-loading {
+        margin: 20px 0 0 0 !important;
+        padding: 0 !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+        text-align: center !important;
       }
       
-      .spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid rgba(255, 255, 255, 0.2);
-        border-top-color: #e94560;
-        border-radius: 50%;
-        margin: 0 auto 10px;
-        animation: spin 1s linear infinite;
+      #mindful-access-overlay .mindful-loading p {
+        color: rgba(255, 255, 255, 0.7) !important;
+        margin: 0 !important;
       }
       
-      @keyframes spin {
+      #mindful-access-overlay .spinner {
+        width: 40px !important;
+        height: 40px !important;
+        border: 3px solid rgba(255, 255, 255, 0.2) !important;
+        border-top-color: #e94560 !important;
+        border-radius: 50% !important;
+        margin: 0 auto 10px auto !important;
+        padding: 0 !important;
+        animation: mindful-spin 1s linear infinite !important;
+      }
+      
+      @keyframes mindful-spin {
         to { transform: rotate(360deg); }
       }
     `;
@@ -309,6 +345,9 @@
     }
   }
 
+  // Track the active access timer
+  let accessTimer = null;
+
   function allowAccess(durationMinutes) {
     // Remove the hiding styles
     const hideStyle = document.getElementById('mindful-access-hide');
@@ -318,11 +357,60 @@
     const overlay = document.getElementById('mindful-access-overlay');
     if (overlay) overlay.remove();
 
-    // Store the access grant with expiry
-    const expiryTime = Date.now() + (durationMinutes * 60 * 1000);
-    chrome.storage.local.set({
-      [`access_${window.location.hostname}`]: expiryTime
-    });
+    // Clear any existing timer
+    if (accessTimer) {
+      clearTimeout(accessTimer);
+      accessTimer = null;
+    }
+
+    // Only set timer and storage if duration > 0 (new access grant)
+    if (durationMinutes > 0) {
+      const expiryTime = Date.now() + (durationMinutes * 60 * 1000);
+      chrome.storage.local.set({
+        [`access_${window.location.hostname}`]: expiryTime
+      });
+
+      // Set timer to revoke access when time expires
+      startAccessTimer(durationMinutes * 60 * 1000);
+    }
+  }
+
+  function startAccessTimer(milliseconds) {
+    // Clear any existing timer
+    if (accessTimer) {
+      clearTimeout(accessTimer);
+    }
+
+    console.log(`Access timer set for ${Math.round(milliseconds / 1000 / 60)} minutes`);
+
+    accessTimer = setTimeout(() => {
+      console.log('Access time expired! Blocking page...');
+      revokeAccess();
+    }, milliseconds);
+  }
+
+  function revokeAccess() {
+    // Clear the stored access
+    chrome.storage.local.remove(`access_${window.location.hostname}`);
+
+    // Re-add the hiding styles
+    const existingStyle = document.getElementById('mindful-access-hide');
+    if (!existingStyle) {
+      const style = document.createElement('style');
+      style.id = 'mindful-access-hide';
+      style.textContent = `
+        body > *:not(#mindful-access-overlay) {
+          display: none !important;
+        }
+        body {
+          overflow: hidden !important;
+        }
+      `;
+      document.documentElement.appendChild(style);
+    }
+
+    // Re-create the overlay
+    createOverlay();
   }
 
   // Check if user already has valid access
@@ -332,8 +420,20 @@
       const expiryTime = result[`access_${window.location.hostname}`];
       
       if (expiryTime && Date.now() < expiryTime) {
-        // User still has valid access
-        allowAccess(0); // Don't add more time
+        // User still has valid access - calculate remaining time
+        const remainingMs = expiryTime - Date.now();
+        
+        // Remove overlay
+        const hideStyle = document.getElementById('mindful-access-hide');
+        if (hideStyle) hideStyle.remove();
+
+        const overlay = document.getElementById('mindful-access-overlay');
+        if (overlay) overlay.remove();
+
+        // Set timer for remaining time
+        startAccessTimer(remainingMs);
+        
+        console.log(`Existing access found. ${Math.round(remainingMs / 1000 / 60)} minutes remaining.`);
         return true;
       }
     } catch (error) {
