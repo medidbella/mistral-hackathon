@@ -1,6 +1,13 @@
 import fastify from "fastify";
+import sqlite from "better-sqlite3";
+import {initializeDatabaseTable, storeApproval, getUserStatus} from "./db.js"
+const db = new sqlite('data.db')
+
+db.pragma('journal_mode = WAL');
 
 const server = fastify();
+
+initializeDatabaseTable(db)
 
 server.listen({ port: 3000 }, (err, addr) => {
     if (err) {
