@@ -74,11 +74,9 @@ export function getUserStatus(db: sqlite.Database, userUuid: string): UserStatus
         };
     }
 
-    // Check if the stored data is from today
     const today = new Date().toISOString().split('T')[0];
     
     if (user.last_upload !== today) {
-        // Data is from a previous day - return zeros (it's a fresh day)
         return {
             approvals_today: 0,
             total_duration: 0
