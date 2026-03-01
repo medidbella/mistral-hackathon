@@ -1,6 +1,12 @@
 
 const BACKEND_BASE_URL = 'http://localhost:3000';
 
+// TODO: Update this URL once GitHub Pages is deployed
+const UNINSTALL_URL = 'https://medidbella.github.io/mistral-hackathon/uninstall.html';
+
+// Set uninstall redirect URL
+chrome.runtime.setUninstallURL(UNINSTALL_URL);
+
 // Generate a unique user ID
 function generateUserId() {
   return crypto.randomUUID();
