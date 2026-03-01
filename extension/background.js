@@ -3,7 +3,7 @@ const BACKEND_BASE_URL = 'http://localhost:3000';
 
 // Generate a unique user ID
 function generateUserId() {
-  return 'user_' + crypto.randomUUID();
+  return crypto.randomUUID();
 }
 
 // Get or create user ID
