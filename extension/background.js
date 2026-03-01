@@ -81,9 +81,15 @@ async function handleAccessRequest(payload) {
 // Clean up expired access entries periodically
 chrome.alarms.create('cleanupExpiredAccess', { periodInMinutes: 5 });
 
+// Badge countdown — updates every minute
+chrome.alarms.create('badgeCountdown', { periodInMinutes: 1 });
+
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'cleanupExpiredAccess') {
     cleanupExpiredAccess();
+  }
+  if (alarm.name === 'badgeCountdown') {
+    updateBadgeCountdown();
   }
 });
 
@@ -109,3 +115,84 @@ chrome.runtime.onInstalled.addListener(async () => {
   const userId = await getUserId();
   console.log('Mindful Access extension installed. User ID:', userId);
 });
+
+// ── Badge Countdown ──────────────────────────────────────────────────
+
+let badgeInterval = null;
+
+async function updateBadgeCountdown() {
+  const storage = await chrome.storage.local.get(null);
+  const now = Date.now();
+
+  // Find the active access token with the most remaining time
+  let maxRemainingMs = 0;
+
+  for (const [key, value] of Object.entries(storage)) {
+    if (key.startsWith('access_') && typeof value === 'number') {
+      const remaining = value - now;
+      if (remaining > maxRemainingMs) {
+        maxRemainingMs = remaining;
+      }
+    }
+  }
+
+  if (maxRemainingMs > 0) {
+    const totalSeconds = Math.ceil(maxRemainingMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    // Show MM:SS when under 1 minute, otherwise Xm
+    let text;
+    if (minutes < 1) {
+      text = `${seconds}s`;
+    } else {
+      text = `${minutes}m`;
+    }
+
+    // Color shifts: green → orange → red as time drops
+    let color;
+    if (minutes >= 5) {
+      color = '#2ed573'; // green — plenty of time
+    } else if (minutes >= 2) {
+      color = '#ffa502'; // orange — getting low
+    } else {
+      color = '#e94560'; // red — critical
+    }
+
+    await chrome.action.setBadgeText({ text });
+    await chrome.action.setBadgeBackgroundColor({ color });
+
+    // Keep the per-second interval alive while access is active
+    ensureBadgeInterval();
+  } else {
+    await chrome.action.setBadgeText({ text: '' });
+    stopBadgeInterval();
+  }
+}
+
+function ensureBadgeInterval() {
+  if (badgeInterval) return;
+  badgeInterval = setInterval(() => {
+    updateBadgeCountdown();
+  }, 1000);
+}
+
+function stopBadgeInterval() {
+  if (badgeInterval) {
+    clearInterval(badgeInterval);
+    badgeInterval = null;
+  }
+}
+
+// Also update badge immediately when storage changes (e.g., new access granted)
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'local') {
+    const hasAccessChange = Object.keys(changes).some(key => key.startsWith('access_'));
+    if (hasAccessChange) {
+      updateBadgeCountdown();
+    }
+  }
+});
+
+// Run once on startup to set the badge if there's an active session
+updateBadgeCountdown();

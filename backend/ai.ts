@@ -1,28 +1,22 @@
 import { type AccessRequestBody } from "./server.js";
 import { Mistral } from "@mistralai/mistralai";
+import { readFileSync } from "fs";
 
 const mistral = new Mistral({
     apiKey: process.env.API_KEY || '',
 });
 
+const systemPromptTemplate = readFileSync('./system_prompt.txt', 'utf-8')
+
+
 export function getSystemPrompt(requestBody: AccessRequestBody & { approvalCount: number, timeSpentMinutes: number }): string
 {
-  return `
-  You are an AI bouncer for a productivity browser extension.
-  Your job is to evaluate the user's reason for accessing a distracting website.
-  Respond in JSON format: {"allowed": boolean, "message": string, "duration": number}.
-  Rules:
-  - If the reason is valid and they haven't exceeded their daily limit, grant access for a short duration.
-  - If the reason is weak or they've spent too much time, deny access and advise them.
-  - Be strict but funny.
-  Context:
-  - Previous approvals today: ${requestBody.approvalCount}
-  - Time spent today: ${requestBody.timeSpentMinutes} minutes
-  - Current time: ${new Date().toLocaleTimeString()}
-  - Site they want to access: ${requestBody.site}
-  - URL: ${requestBody.url}
-    Make your decision based on the reason, user's history, and the site they want to access.
-`;
+  return systemPromptTemplate
+    .replace('{{approvalCount}}', String(requestBody.approvalCount))
+    .replace('{{timeSpentMinutes}}', String(requestBody.timeSpentMinutes))
+    .replace('{{currentTime}}', new Date().toLocaleTimeString())
+    .replace('{{site}}', requestBody.site)
+    .replace('{{url}}', requestBody.url);
 }
 
 export interface AIresponse {

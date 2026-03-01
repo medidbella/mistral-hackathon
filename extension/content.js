@@ -345,7 +345,7 @@
         // Remove overlay and show page after a short delay
         setTimeout(() => {
           allowAccess(response.duration);
-        }, 2000);
+        }, 5000); // delay to let user read the message
       } else {
         // Access denied
         responseDiv.className = 'mindful-response denied';
