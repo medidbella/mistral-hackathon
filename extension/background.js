@@ -42,7 +42,7 @@ async function handleAccessRequest(payload) {
   const userId = await getUserId();
   
   const requestBody = {
-    userId: userId,
+    userUuid: userId,
     site: payload.site,
     url: payload.url,
     excuse: payload.excuse,
