@@ -96,8 +96,8 @@ export function extensionEndpointHandlerMock(req:FastifyRequest, res:FastifyRepl
     console.log("User data:", userData)
     const mockResponse: AIresponse = Math.random() > 0.5 ? {
         allowed: true,
-        message: "Access granted for 15 minutes. Remember to stay productive!",
-        duration: 15
+        message: "Access granted for 1 minutes. Remember to stay productive!",
+        duration: 1
     }
     : {
     allowed: false,

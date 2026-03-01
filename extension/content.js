@@ -9,24 +9,49 @@
   if (!window.location.href.startsWith('http')) {
     return;
   }
-  // Hide all page content immediately
-  const style = document.createElement('style');
-  style.id = 'mindful-access-hide';
-  style.textContent = `
-    body > *:not(#mindful-access-overlay) {
-      display: none !important;
-    }
-    body {
-      overflow: hidden !important;
-    }
-  `;
-  document.documentElement.appendChild(style);
 
-  // Wait for DOM to be ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  // Check if user already has valid access BEFORE hiding content
+  const storageKey = `access_${window.location.hostname}`;
+
+  chrome.storage.local.get(storageKey).then((result) => {
+    const expiryTime = result[storageKey];
+
+    if (expiryTime && Date.now() < expiryTime) {
+      // User still has valid access — don't block, just set expiry timer
+      const remainingMs = expiryTime - Date.now();
+      console.log(`Existing access found. ${Math.round(remainingMs / 1000 / 60)} minutes remaining.`);
+      startAccessTimer(remainingMs);
+      return; // Don't hide anything
+    }
+
+    // No valid access — block the page
+    blockPage();
+  }).catch(() => {
+    // On error, block to be safe
+    blockPage();
+  });
+
+  function blockPage() {
+    const style = document.createElement('style');
+    style.id = 'mindful-access-hide';
+    style.textContent = `
+      body > *:not(#mindful-access-overlay) {
+        display: none !important;
+      }
+      body {
+        overflow: hidden !important;
+      }
+    `;
+    document.documentElement.appendChild(style);
+
+    // Pause any media that might be playing
+    pauseAllMedia();
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   }
 
   function init() {
@@ -393,6 +418,9 @@
     // Clear the stored access
     chrome.storage.local.remove(`access_${window.location.hostname}`);
 
+    // Pause any media that might be playing
+    pauseAllMedia();
+
     // Re-add the hiding styles
     const existingStyle = document.getElementById('mindful-access-hide');
     if (!existingStyle) {
@@ -413,35 +441,17 @@
     createOverlay();
   }
 
-  // Check if user already has valid access
-  async function checkExistingAccess() {
-    try {
-      const result = await chrome.storage.local.get(`access_${window.location.hostname}`);
-      const expiryTime = result[`access_${window.location.hostname}`];
-      
-      if (expiryTime && Date.now() < expiryTime) {
-        // User still has valid access - calculate remaining time
-        const remainingMs = expiryTime - Date.now();
-        
-        // Remove overlay
-        const hideStyle = document.getElementById('mindful-access-hide');
-        if (hideStyle) hideStyle.remove();
-
-        const overlay = document.getElementById('mindful-access-overlay');
-        if (overlay) overlay.remove();
-
-        // Set timer for remaining time
-        startAccessTimer(remainingMs);
-        
-        console.log(`Existing access found. ${Math.round(remainingMs / 1000 / 60)} minutes remaining.`);
-        return true;
+  // Pause all video and audio elements on the page
+  function pauseAllMedia() {
+    document.querySelectorAll('video, audio').forEach(media => {
+      try {
+        media.pause();
+        media.muted = true;
+      } catch (e) {
+        // Ignore errors from cross-origin iframes
       }
-    } catch (error) {
-      console.error('Error checking access:', error);
-    }
-    return false;
+    });
   }
 
-  // Check existing access on load
-  checkExistingAccess();
+  // Check existing access on load is handled at the top of the script
 })();
