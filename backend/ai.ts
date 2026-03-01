@@ -1,4 +1,9 @@
 import { type AccessRequestBody } from "./server.js";
+import { Mistral } from "@mistralai/mistralai";
+
+const mistral = new Mistral({
+    apiKey: process.env.API_KEY || '',
+});
 
 export function getSystemPrompt(requestBody: AccessRequestBody & { approvalCount: number, timeSpentMinutes: number }): string
 {
@@ -24,42 +29,37 @@ export interface AIresponse {
     allowed: boolean;
     message: string;
     duration: number;
-} 
-
-export interface AIresponse {
-    allowed: boolean;
-    message: string;
-    duration: number;
 }
 
 export async function requestAccessFromAi(finalPrompt: string, userReason: string): Promise<AIresponse>
 {
-    const API_KEY = process.env.MISTRAL_API_KEY || 'your_api_key_here';
-    const API_URL = 'https://api.mistral.ai/v1/chat';
-
     try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${API_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                model: 'mistral-small',
-                response_format: { type: 'json_object' },
-                messages: [
-                    { role: 'system', content: finalPrompt },
-                    { role: 'user', content: `User's reason: "${userReason}"` },
-                ]
-            })
+        const result = await mistral.chat.complete({
+            model: 'mistral-small-latest',
+            responseFormat: { type: 'json_object' },
+            temperature: 0.2,
+            maxTokens: 100,
+            messages: [
+                { role: 'system', content: finalPrompt },
+                { role: 'user', content: `User's reason: "${userReason}"` },
+            ],
         });
-        const data = await response.json() as { choices: { message: { content: string } }[] };
-        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-            throw new Error("Invalid response structure from AI");
+
+        const content = result.choices?.[0]?.message?.content;
+        if (!content || typeof content !== 'string') {
+            throw new Error('AI returned an empty or invalid response');
         }
-        return JSON.parse(data.choices[0].message.content) as AIresponse;
-    } catch (error) {
-        console.error("Error requesting access from AI:", error);
+        console.log('AI response received successfully');
+        return JSON.parse(content) as AIresponse;
+    } catch (error:any) {
+        if ('statusCode' in error) {
+            console.error(`Mistral API error (${error.statusCode}): ${error.message}`);
+            console.error('Response body:', error.body);
+        } else if (error instanceof Error) {
+            console.error('Error requesting access from AI:', error.message);
+        } else {
+            console.error('Unexpected error requesting access from AI:', error);
+        }
         throw error;
     }
 }

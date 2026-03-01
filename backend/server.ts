@@ -110,4 +110,4 @@ export function extensionEndpointHandlerMock(req:FastifyRequest, res:FastifyRepl
     res.send(mockResponse)
 }
 
-server.post("/api/request-access", {schema: accessRequestSchema}, extensionEndpointHandlerMock)
+server.post("/api/request-access", {schema: accessRequestSchema}, extensionEndpointHandler)
