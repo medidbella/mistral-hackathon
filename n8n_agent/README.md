@@ -1,4 +1,4 @@
-# Aisanat – AI Bouncer Browser Extension Automation
+# Aisanat – AI Bouncer agent Automation
 
 ## Overview
 
