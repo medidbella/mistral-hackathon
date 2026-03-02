@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Bouncer - Take Control of Your Time</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<!-- FontAwesome -->
+<!-- chat interface -->
+<script src="https://kit.fontawesome.com/95e0e7e678.js" crossorigin="anonymous"></script>
+ <script type="module" defer>
+    import n8nChatUiWidget from 'https://proxy.n8nchatui.com/api/embed/yo11g7';
+    n8nChatUiWidget.load();
+</script>
+<style>
+/* Reset & Base */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Links */
+a { color: #e94560; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.label1 { border-radius: 40px; position: relative; display: inline-flex; flex-direction: row; width: 500px ;}
+/* Header */
+header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 12px; margin: 20px; }
+header h1 { font-weight: 700; font-size: 1.8rem; letter-spacing: 2px; }
+nav a { margin-left: 25px; font-weight: 600; font-size: 1rem; padding: 6px 12px; border-radius: 8px; transition: background 0.3s ease; }
+nav a:hover { background: linear-gradient(135deg, #e94560, #0f3460); color: #fff; }
+
+/* Main */
+main { flex: 1; padding: 40px 20px; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 80px; }
+
+/* Hero Section */
+.hero { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px; text-align: center; }
+.hero-text { max-width: 600px; }
+.hero-text h2 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 15px; }
+.hero-text p { font-size: 1.3rem; color: rgba(255,255,255,0.8); margin-bottom: 30px; }
+.hero-image { width: 100%; max-width: 450px; aspect-ratio: 4/5; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); background: url('https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=600&q=80') no-repeat center/cover; }
+
+/* Features */
+.features { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; }
+.feature { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 25px 30px; width: 280px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); transition: transform 0.3s ease; text-align: center; }
+.feature:hover { transform: translateY(-8px); }
+.feature-icon { font-size: 50px; color: #e94560; margin-bottom: 15px; }
+.feature h3 { font-size: 1.5rem; margin-bottom: 12px; }
+.feature p { font-size: 1rem; line-height: 1.4; color: rgba(255,255,255,0.8); }
+
+/* Installation Guide Section */
+.installation { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); color: #fff; }
+.installation h1, .installation h2, .installation h3 { margin-bottom: 20px; color: #e94560; font-weight: 700; }
+.installation p, .installation li { margin-bottom: 15px; color: rgba(255,255,255,0.85); line-height: 1.6; }
+.installation code, .installation pre { background: rgba(255,255,255,0.1); color: #fff; padding: 5px 8px; border-radius: 6px; font-family: monospace; overflow-x: auto; display: block; }
+.installation pre { padding: 15px; margin-bottom: 20px; }
+.installation img { max-width: 100%; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); margin-bottom: 30px; }
+
+/* Footer */
+footer { text-align: center; padding: 30px 40px; color: rgba(255,255,255,0.5); font-size: 0.9rem; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 12px; margin: 20px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero { flex-direction: column; }
+  .features { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 style="font-size: 24px;">AI Bouncer</h1>
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#installation-guide">Installation Guide</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="hero-text">
+      <h2>Take Control of Your Time<br>Break Social Media Addiction</h2>
+      <p>AI Bouncer intelligently challenges your social media urges, helping you stay focused by requiring a good reason before you get distracted.</p>
+    </div>
+    <div><img src="https://thumbs.dreamstime.com/b/take-control-your-time-vector-modern-illustration-man-keep-clock-over-head-management-176560757.jpg" alt="label" srcset="" class="label1"></div>
+  </section>
+
+  <section class="features" id="features">
+    <article class="feature">
+      <div class="feature-icon"><i class="fas fa-robot"></i></div>
+      <h3>Smart AI Evaluation</h3>
+      <p>Your social media access reason is analyzed in real-time to ensure it’s justified based on your habits and daily limits.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon"><i class="fas fa-clock"></i></div>
+      <h3>Timed Access & Limits</h3>
+      <p>Receive timed passes that limit how long and how often you can visit distracting sites each day.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon"><i class="fas fa-comments"></i></div>
+      <h3>Friendly Roasts & Advice</h3>
+      <p>If your excuse isn’t convincing, the AI may roast you lightly or offer helpful tips to keep your focus sharp.</p>
+    </article>
+  </section>
+
+  <section class="installation" id="installation-guide">
+    <h1>Installation Guide & Project Overview</h1>
+    <h2>Problem</h2>
+    <p>Social media addiction is a real challenge for productivity. We often find ourselves distracted by platforms like Instagram, Twitter, and YouTube when we should be focused on work. The AI Bouncer extension aims to tackle this problem by adding friction to the process of accessing distracting websites.</p>
+
+    <h2>The Idea</h2>
+    <p>The AI Bouncer works as a browser extension that intercepts attempts to access social media sites. Users must provide a reason for needing to visit the site. This reason is evaluated by an AI (powered by Mistral) which checks previous approvals and daily social media usage. Based on this, the AI either grants a timed pass, roasts the user, provides advice, or blocks the page.</p>
+
+    <h2>Project Architecture</h2>
+    <h3>Backend (Fastify + SQLite)</h3>
+    <ul>
+      <li><strong>Fastify:</strong> Handles requests and AI evaluation.</li>
+      <li><strong>SQLite:</strong> Stores user interactions and social media usage data.</li>
+      <li><strong>Mistral AI:</strong> Evaluates reasons and provides a pass or advice.</li>
+    </ul>
+
+    <h3>Browser Extension</h3>
+    <ul>
+      <li>Intercepts page loads for sites like Instagram, Twitter, YouTube.</li>
+      <li>Shows a popup asking for a reason if the site is blocked.</li>
+      <li>AI evaluates the reason and decides whether to grant access.</li>
+    </ul>
+
+    <h2>How to Run the Project Locally</h2>
+    <h3>1. Set Up the Backend</h3>
+    <pre><code>cd backend
+npm install
+cp env.sample .env
+# Add your Mistral API key
+MISTRAL_API_KEY=your_key_here
+npm run build
+npm start
+# Backend runs at http://localhost:3000</code></pre>
+
+    <h3>2. Install the Extension</h3>
+    <ol>
+      <li>Open <strong>Google Chrome</strong> or any Chromium-based browser.</li>
+      <li>Go to <code>chrome://extensions/</code> and enable Developer mode.</li>
+      <li>Click "Load unpacked" and select the <code>extension</code> folder.</li>
+    </ol>
+
+    <h3>3. Test the AI Bouncer</h3>
+    <ol>
+      <li>Try visiting a distracting site (e.g.,) <code>https://youtube.com</code></li>
+      <li>The AI Bouncer will block the page and ask for a reason.</li>
+      <li>Submit your excuse and see if Mistral AI grants access.</li>
+    </ol>
+
+    <h2>Architecture Overview</h2>
+    <img src="https://github.com/user-attachments/assets/d62c1c16-c944-4e17-b6d9-c6d4b3b3c996" alt="AI Bouncer Architecture Diagram">
+
+    <h2>License</h2>
+    <p>This project is licensed under the MIT License. See the LICENSE file for details.</p>
+    <p>To get your official Mistral API key, please visit the <a href="https://www.mistral.ai/" target="_blank">Mistral AI website</a>.</p>
+  </section>
+</main>
+
+<footer>
+  Copyright  &copy; 2026 mohamed idbella and Ayoub Bouagna — Helping you reclaim your time and focus
+</footer>
+</body>
+</html>
